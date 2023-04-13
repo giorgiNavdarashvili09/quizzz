@@ -46,6 +46,8 @@ class _QuizState extends State<Quiz> {
   var buttonCColor = Colors.blue;
   var buttonDColor = Colors.blue;
 
+  var nextQuestionVisible = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,15 +169,25 @@ class _QuizState extends State<Quiz> {
               ],
             ),
             const SizedBox(height: 36,),
-            ElevatedButton(onPressed: (){
-                setState(() {
-                  index++;
-                  buttonAColor = Colors.blue;
-                  buttonBColor = Colors.blue;
-                  buttonCColor = Colors.blue;
-                  buttonDColor = Colors.blue;
-                });
-            }, child: const Text('Next Question'))
+            Visibility(
+              visible: nextQuestionVisible,
+              child: ElevatedButton(onPressed: (){
+
+                if(questions.length > index + 1) {
+                  setState(() {
+                    index++;
+                    buttonAColor = Colors.blue;
+                    buttonBColor = Colors.blue;
+                    buttonCColor = Colors.blue;
+                    buttonDColor = Colors.blue;
+                  });
+                } else {
+                  setState(() {
+                    nextQuestionVisible = false;
+                  });
+                }
+              }, child: const Text('Next Question')),
+            )
           ],
         ),
       ),
