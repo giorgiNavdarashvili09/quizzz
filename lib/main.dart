@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizzz/other_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,20 +28,19 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
-
   var score = 0;
 
-  final questions = ["რა მქვია?", "რამდენი წლის ვარ?"];
+  final questions = ["რა მქვია?", "რამდენი წლის ვარ?", "საიდან ვარ?"];
 
-  final answersA = ["სანდრო", "23"];
+  final answersA = ["სანდრო", "23", "საქართველო"];
 
-  final answersB = ["ნინო", "28"];
+  final answersB = ["ნინო", "28", "საფრანგეთი"];
 
-  final answersC = ["გიორგი", "12"];
+  final answersC = ["გიორგი", "12", "ამერიკა"];
 
-  final answersD = ["ნიკა", "1"];
+  final answersD = ["ნიკა", "1", "იტალია"];
 
-  final correctAnswers = ["გიორგი", "28"];
+  final correctAnswers = ["გიორგი", "28", "საქართველო"];
 
   var index = 0;
 
@@ -64,18 +64,24 @@ class _QuizState extends State<Quiz> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: () {
-              setState(() {
-                index = 0;
-                buttonAColor = Colors.blue;
-                buttonBColor = Colors.blue;
-                buttonCColor = Colors.blue;
-                buttonDColor = Colors.blue;
-                score = 0;
-                alreadyAnswered = false;
-              });
-            }, child: const Text("reset")),
-            Text("Score: $score"),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    index = 0;
+                    buttonAColor = Colors.blue;
+                    buttonBColor = Colors.blue;
+                    buttonCColor = Colors.blue;
+                    buttonDColor = Colors.blue;
+                    score = 0;
+                    alreadyAnswered = false;
+                    nextQuestionVisible = true;
+                  });
+                },
+                child: const Text("reset")),
+            Text("Score: $score", style: TextStyle(
+              color: Colors.red,
+              fontSize: 22,
+            ),),
             Text(questions[index]),
             const SizedBox(
               height: 32,
@@ -85,7 +91,8 @@ class _QuizState extends State<Quiz> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    if(!alreadyAnswered) {
+
+                    if (!alreadyAnswered) {
                       if (correctAnswers[index] == answersA[index]) {
                         setState(() {
                           score++;
@@ -102,7 +109,10 @@ class _QuizState extends State<Quiz> {
                     });
                   },
                   child: Container(
-                    color: buttonAColor,
+                    decoration: BoxDecoration(
+                        color: buttonAColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10))
+                    ),
                     width: 120,
                     height: 40,
                     alignment: Alignment.center,
@@ -114,19 +124,29 @@ class _QuizState extends State<Quiz> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    if (correctAnswers[index] == answersB[index]) {
-                      setState(() {
-                        score++;
-                        buttonBColor = Colors.green;
-                      });
-                    } else {
-                      setState(() {
-                        buttonBColor = Colors.red;
-                      });
+                    if(!alreadyAnswered) {
+                      if (correctAnswers[index] == answersB[index]) {
+                        setState(() {
+                          score++;
+                          buttonBColor = Colors.green;
+                        });
+                      } else {
+                        setState(() {
+                          buttonBColor = Colors.red;
+                        });
+                      }
                     }
+                    setState(() {
+                      alreadyAnswered = true;
+                    });
+
                   },
                   child: Container(
-                    color: buttonBColor,
+                    decoration: BoxDecoration(
+                      color: buttonBColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10))
+
+                    ),
                     width: 120,
                     height: 40,
                     alignment: Alignment.center,
@@ -146,15 +166,17 @@ class _QuizState extends State<Quiz> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    if (correctAnswers[index] == answersC[index]) {
-                      setState(() {
-                        score++;
-                        buttonCColor = Colors.green;
-                      });
-                    } else {
-                      setState(() {
-                        buttonCColor = Colors.red;
-                      });
+                    if(!alreadyAnswered) {
+                      if (correctAnswers[index] == answersC[index]) {
+                        setState(() {
+                          score++;
+                          buttonCColor = Colors.green;
+                        });
+                      } else {
+                        setState(() {
+                          buttonCColor = Colors.red;
+                        });
+                      }
                     }
                     setState(() {
                       alreadyAnswered = true;
@@ -173,16 +195,21 @@ class _QuizState extends State<Quiz> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    if (correctAnswers[index] == answersD[index]) {
-                      setState(() {
-                        score++;
-                        buttonDColor = Colors.green;
-                      });
-                    } else {
-                      setState(() {
-                        buttonDColor = Colors.red;
-                      });
+                    if(!alreadyAnswered) {
+                      if (correctAnswers[index] == answersD[index]) {
+                        setState(() {
+                          score++;
+                          buttonDColor = Colors.green;
+                        });
+                      } else {
+                        setState(() {
+                          buttonDColor = Colors.red;
+                        });
+                      }
                     }
+                    setState(() {
+                      alreadyAnswered = true;
+                    });
                   },
                   child: Container(
                     color: buttonDColor,
@@ -197,28 +224,39 @@ class _QuizState extends State<Quiz> {
                 ),
               ],
             ),
-            const SizedBox(height: 36,),
+            const SizedBox(
+              height: 36,
+            ),
             Visibility(
               visible: nextQuestionVisible,
-              child: ElevatedButton(onPressed: (){
+              child: ElevatedButton(
+                  onPressed: () {
+                    if (questions.length > index + 1) {
+                      setState(() {
+                        index++; // 0 -> 1
+                      });
+                    }
 
-                if(questions.length > index + 1) {
-                  setState(() {
-                    index++;
+                    if (index == questions.length - 1) {
+                      {
+                        setState(() {
+                          nextQuestionVisible = false;
+                        });
+                      }
+                    }
                     buttonAColor = Colors.blue;
                     buttonBColor = Colors.blue;
                     buttonCColor = Colors.blue;
                     buttonDColor = Colors.blue;
-                  });
-                } else {
-                  setState(() {
-                    nextQuestionVisible = false;
                     alreadyAnswered = false;
-                  });
-                }
-              }, child: const Text('Next Question')),
-            )
+                  },
+                  child: const Text('Next Question')),
+            ),
+            ElevatedButton(onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => OtherPage(score: score)));
+            }, child: Text("Go To Score Screen"))
           ],
+          
         ),
       ),
     );
