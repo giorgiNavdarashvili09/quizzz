@@ -42,6 +42,13 @@ class _QuizState extends State<Quiz> {
 
   final correctAnswers = ["გიორგი", "28", "საქართველო"];
 
+  //შევქმენით ახალი სია რომელშიც ვინახავთ სურათების მისამართებს პროექტის ფაილებში
+  final imagePaths = [
+    "assets/images/lights.jpg",
+    "assets/images/sleipurvegur.jpg",
+    "assets/images/traffic-sign-stop.png"
+  ];
+
   var index = 0;
 
   var buttonAColor = Colors.blue;
@@ -59,204 +66,209 @@ class _QuizState extends State<Quiz> {
       appBar: AppBar(
         title: const Text('Quizzz'),
       ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 48),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    index = 0;
-                    buttonAColor = Colors.blue;
-                    buttonBColor = Colors.blue;
-                    buttonCColor = Colors.blue;
-                    buttonDColor = Colors.blue;
-                    score = 0;
-                    alreadyAnswered = false;
-                    nextQuestionVisible = true;
-                  });
-                },
-                child: const Text("reset")),
-            Text("Score: $score", style: TextStyle(
-              color: Colors.red,
-              fontSize: 22,
-            ),),
-            Text(questions[index]),
-            const SizedBox(
-              height: 32,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: () {
-
-                    if (!alreadyAnswered) {
-                      if (correctAnswers[index] == answersA[index]) {
-                        setState(() {
-                          score++;
-                          buttonAColor = Colors.green;
-                        });
-                      } else {
-                        setState(() {
-                          buttonAColor = Colors.red;
-                        });
-                      }
-                    }
-                    setState(() {
-                      alreadyAnswered = true;
-                    });
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: buttonAColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
-                    width: 120,
-                    height: 40,
-                    alignment: Alignment.center,
-                    child: Text(
-                      answersA[index],
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    if(!alreadyAnswered) {
-                      if (correctAnswers[index] == answersB[index]) {
-                        setState(() {
-                          score++;
-                          buttonBColor = Colors.green;
-                        });
-                      } else {
-                        setState(() {
-                          buttonBColor = Colors.red;
-                        });
-                      }
-                    }
-                    setState(() {
-                      alreadyAnswered = true;
-                    });
-
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: buttonBColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10))
-
-                    ),
-                    width: 120,
-                    height: 40,
-                    alignment: Alignment.center,
-                    child: Text(
-                      answersB[index],
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if(!alreadyAnswered) {
-                      if (correctAnswers[index] == answersC[index]) {
-                        setState(() {
-                          score++;
-                          buttonCColor = Colors.green;
-                        });
-                      } else {
-                        setState(() {
-                          buttonCColor = Colors.red;
-                        });
-                      }
-                    }
-                    setState(() {
-                      alreadyAnswered = true;
-                    });
-                  },
-                  child: Container(
-                    color: buttonCColor,
-                    width: 120,
-                    height: 40,
-                    alignment: Alignment.center,
-                    child: Text(
-                      answersC[index],
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    if(!alreadyAnswered) {
-                      if (correctAnswers[index] == answersD[index]) {
-                        setState(() {
-                          score++;
-                          buttonDColor = Colors.green;
-                        });
-                      } else {
-                        setState(() {
-                          buttonDColor = Colors.red;
-                        });
-                      }
-                    }
-                    setState(() {
-                      alreadyAnswered = true;
-                    });
-                  },
-                  child: Container(
-                    color: buttonDColor,
-                    width: 120,
-                    height: 40,
-                    alignment: Alignment.center,
-                    child: Text(
-                      answersD[index],
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 36,
-            ),
-            Visibility(
-              visible: nextQuestionVisible,
-              child: ElevatedButton(
+      // რადგან კონტენტის რაოდენობა გაიზარდა გამოვიყენეთ SingleChildScrollView რათ შევძლოთ სრული კონტენტის ნახვა
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 48),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
                   onPressed: () {
-                    if (questions.length > index + 1) {
+                    setState(() {
+                      index = 0;
+                      buttonAColor = Colors.blue;
+                      buttonBColor = Colors.blue;
+                      buttonCColor = Colors.blue;
+                      buttonDColor = Colors.blue;
+                      score = 0;
+                      alreadyAnswered = false;
+                      nextQuestionVisible = true;
+                    });
+                  },
+                  child: const Text("reset")),
+              // დავამატეთ Image ვიჯეტი რომელსაც პარამეტრად გადავცემთ AssetImage_ს. ხოლო სურათის ლოკაცია მოგვაქვს imagePaths სიიდან
+              Image(image: AssetImage(imagePaths[index])),
+              Text(
+                "Score: $score",
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 22,
+                ),
+              ),
+              Text(questions[index]),
+              const SizedBox(
+                height: 32,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (!alreadyAnswered) {
+                        if (correctAnswers[index] == answersA[index]) {
+                          setState(() {
+                            score++;
+                            buttonAColor = Colors.green;
+                          });
+                        } else {
+                          setState(() {
+                            buttonAColor = Colors.red;
+                          });
+                        }
+                      }
                       setState(() {
-                        index++; // 0 -> 1
+                        alreadyAnswered = true;
                       });
-                    }
-
-                    if (index == questions.length - 1) {
-                      {
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: buttonAColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      width: 120,
+                      height: 40,
+                      alignment: Alignment.center,
+                      child: Text(
+                        answersA[index],
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (!alreadyAnswered) {
+                        if (correctAnswers[index] == answersB[index]) {
+                          setState(() {
+                            score++;
+                            buttonBColor = Colors.green;
+                          });
+                        } else {
+                          setState(() {
+                            buttonBColor = Colors.red;
+                          });
+                        }
+                      }
+                      setState(() {
+                        alreadyAnswered = true;
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: buttonBColor,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      width: 120,
+                      height: 40,
+                      alignment: Alignment.center,
+                      child: Text(
+                        answersB[index],
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (!alreadyAnswered) {
+                        if (correctAnswers[index] == answersC[index]) {
+                          setState(() {
+                            score++;
+                            buttonCColor = Colors.green;
+                          });
+                        } else {
+                          setState(() {
+                            buttonCColor = Colors.red;
+                          });
+                        }
+                      }
+                      setState(() {
+                        alreadyAnswered = true;
+                      });
+                    },
+                    child: Container(
+                      color: buttonCColor,
+                      width: 120,
+                      height: 40,
+                      alignment: Alignment.center,
+                      child: Text(
+                        answersC[index],
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (!alreadyAnswered) {
+                        if (correctAnswers[index] == answersD[index]) {
+                          setState(() {
+                            score++;
+                            buttonDColor = Colors.green;
+                          });
+                        } else {
+                          setState(() {
+                            buttonDColor = Colors.red;
+                          });
+                        }
+                      }
+                      setState(() {
+                        alreadyAnswered = true;
+                      });
+                    },
+                    child: Container(
+                      color: buttonDColor,
+                      width: 120,
+                      height: 40,
+                      alignment: Alignment.center,
+                      child: Text(
+                        answersD[index],
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 36,
+              ),
+              Visibility(
+                visible: nextQuestionVisible,
+                child: ElevatedButton(
+                    onPressed: () {
+                      if (questions.length > index + 1) {
                         setState(() {
-                          nextQuestionVisible = false;
+                          index++; // 0 -> 1
                         });
                       }
-                    }
-                    buttonAColor = Colors.blue;
-                    buttonBColor = Colors.blue;
-                    buttonCColor = Colors.blue;
-                    buttonDColor = Colors.blue;
-                    alreadyAnswered = false;
+
+                      if (index == questions.length - 1) {
+                        {
+                          setState(() {
+                            nextQuestionVisible = false;
+                          });
+                        }
+                      }
+                      buttonAColor = Colors.blue;
+                      buttonBColor = Colors.blue;
+                      buttonCColor = Colors.blue;
+                      buttonDColor = Colors.blue;
+                      alreadyAnswered = false;
+                    },
+                    child: const Text('Next Question')),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => OtherPage(score: score)));
                   },
-                  child: const Text('Next Question')),
-            ),
-            ElevatedButton(onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => OtherPage(score: score)));
-            }, child: Text("Go To Score Screen"))
-          ],
-          
+                  child: Text("Go To Score Screen"))
+            ],
+          ),
         ),
       ),
     );
